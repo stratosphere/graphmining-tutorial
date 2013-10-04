@@ -16,7 +16,6 @@ import eu.stratosphere.pact.common.type.PactRecord;
 import eu.stratosphere.pact.common.type.base.PactInteger;
 import eu.stratosphere.pact.common.type.base.PactString;
 
-import java.io.Serializable;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
@@ -65,7 +64,7 @@ public class OutDegreeDistribution implements PlanAssembler {
     return plan;
   }
 
-  public static class EdgeMap extends MapStub implements Serializable {
+  public static class EdgeMap extends MapStub {
 
     private final PactRecord outputRecord = new PactRecord();
     private final PactInteger outputVertex = new PactInteger();
@@ -89,11 +88,11 @@ public class OutDegreeDistribution implements PlanAssembler {
     }
   }
 
-  public static class DegreePerVertex extends ReduceStub implements Serializable {
+  public static class DegreePerVertex extends ReduceStub {
 
     private final PactRecord outputRecord = new PactRecord();
     private final PactInteger pactDegree = new PactInteger();
-    private final PactInteger one = new PactInteger();
+    private final PactInteger one = new PactInteger(1);
 
     @Override
     public void reduce(Iterator<PactRecord> records, Collector<PactRecord> collector) throws Exception {
@@ -112,7 +111,7 @@ public class OutDegreeDistribution implements PlanAssembler {
   }
 
   @ReduceContract.Combinable
-  public static class SumDegrees extends ReduceStub implements Serializable {
+  public static class SumDegrees extends ReduceStub {
 
     private final PactInteger pactCount = new PactInteger();
 
