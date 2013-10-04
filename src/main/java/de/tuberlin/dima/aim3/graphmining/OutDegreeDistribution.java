@@ -119,10 +119,10 @@ public class OutDegreeDistribution implements PlanAssembler {
     public void reduce(Iterator<PactRecord> records, Collector<PactRecord> collector) throws Exception {
 
       PactRecord firstRecord = records.next();
-      int count = 1;
+      int count = firstRecord.getField(1, PactInteger.class).getValue();
       while (records.hasNext()) {
-        records.next();
-        count++;
+        PactRecord nextRecord = records.next();
+        count += nextRecord.getField(1, PactInteger.class).getValue();
       }
 
       pactCount.setValue(count);
