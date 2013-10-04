@@ -41,13 +41,19 @@ public class OutDegreeDistribution implements PlanAssembler {
         .name("ParseEdges")
         .build();
 
-    ReduceContract sum = ReduceContract.builder(SumReduce.class)
+    ReduceContract degreePerVertex = ReduceContract.builder(DegreePerVertex.class)
         .input(edgeMap)
+        .keyField(PactInteger.class, 0)
+        .name("DegreePerVertex")
+        .build();
+
+    ReduceContract sumDegrees = ReduceContract.builder(SumDegrees.class)
+        .input(degreePerVertex)
         .keyField(PactInteger.class, 0)
         .name("SumDegrees")
         .build();
 
-    FileDataSink out = new FileDataSink(new RecordOutputFormat(), outputPath, sum, "Degrees");
+    FileDataSink out = new FileDataSink(new RecordOutputFormat(), outputPath, sumDegrees, "Degrees");
     RecordOutputFormat.configureRecordFormat(out)
         .recordDelimiter('\n')
         .fieldDelimiter(' ')
@@ -83,23 +89,45 @@ public class OutDegreeDistribution implements PlanAssembler {
     }
   }
 
-  @ReduceContract.Combinable
-  public static class SumReduce extends ReduceStub implements Serializable {
+  public static class DegreePerVertex extends ReduceStub implements Serializable {
 
+    private final PactRecord outputRecord = new PactRecord();
     private final PactInteger pactDegree = new PactInteger();
+    private final PactInteger one = new PactInteger();
+
+    @Override
+    public void reduce(Iterator<PactRecord> records, Collector<PactRecord> collector) throws Exception {
+
+      int degree = 0;
+      while (records.hasNext()) {
+        records.next();
+        degree++;
+      }
+
+      pactDegree.setValue(degree);
+      outputRecord.setField(0, pactDegree);
+      outputRecord.setField(1, one);
+      collector.collect(outputRecord);
+    }
+  }
+
+  @ReduceContract.Combinable
+  public static class SumDegrees extends ReduceStub implements Serializable {
+
+    private final PactInteger pactCount = new PactInteger();
 
     @Override
     public void reduce(Iterator<PactRecord> records, Collector<PactRecord> collector) throws Exception {
 
       PactRecord firstRecord = records.next();
-
-      int degree = 1;
+      int count = 1;
       while (records.hasNext()) {
-        degree++;
+        records.next();
+        count++;
       }
 
-      pactDegree.setValue(degree);
-      firstRecord.setField(0, pactDegree);
+      pactCount.setValue(count);
+      firstRecord.setField(1, pactCount);
       collector.collect(firstRecord);
     }
   }
@@ -108,7 +136,8 @@ public class OutDegreeDistribution implements PlanAssembler {
 
     Plan plan = new OutDegreeDistribution().getPlan(String.valueOf(1),
         "file:////home/ssc/Desktop/tmp/slashdot-zoo/slashdot-zoo.csv",
-        "file:///tmp/ozone/outdegrees.txt");
+        "file:///tmp/ozone/outdegrees");
     LocalExecutor.execute(plan);
+    System.exit(0);
   }
 }
