@@ -29,7 +29,7 @@ public class ReceiveMessage extends MatchStub {
   private PactBoolean messageDelivered = new PactBoolean(true);
 
   @Override
-  public void match(PactRecord recipient, PactRecord recipientState, Collector<PactRecord> collector) throws Exception {
+  public void match(PactRecord recipientState, PactRecord recipient, Collector<PactRecord> collector) throws Exception {
 
     boolean alreadyReceivedMessage = recipientState.getField(1, PactBoolean.class).getValue();
 

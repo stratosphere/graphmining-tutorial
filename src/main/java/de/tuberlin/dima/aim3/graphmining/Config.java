@@ -28,7 +28,7 @@ public class Config {
   }
 
   public static String pathToSlashdotZoo() {
-    return "file:///home/ssc/Desktop/tmp/slashdot-zoo/slashdot-zoo.csv";
+    return "file:///home/ssc/Desktop/tmp/out.slashdot-zoo";
   }
 
   public static String outputPath() {

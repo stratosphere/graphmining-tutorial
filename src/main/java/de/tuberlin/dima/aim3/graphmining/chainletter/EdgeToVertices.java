@@ -39,6 +39,10 @@ public class EdgeToVertices extends MapStub {
 
     String line = record.getField(0, PactString.class).getValue();
 
+    if (line.startsWith("%")) {
+      return;
+    }
+
     String[] tokens = SEPARATOR.split(line);
     int sourceVertex = Integer.parseInt(tokens[0]);
     int targetVertex = Integer.parseInt(tokens[1]);

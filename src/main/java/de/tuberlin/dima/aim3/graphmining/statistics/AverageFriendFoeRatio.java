@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.tuberlin.dima.aim3.graphmining;
+package de.tuberlin.dima.aim3.graphmining.statistics;
 
-public class AverageFriendEnemyRatio {
+public class AverageFriendFoeRatio {
   // IMPLEMENT ME
 }

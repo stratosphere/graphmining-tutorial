@@ -92,10 +92,12 @@ public class ChainLetter implements PlanAssembler {
         .build();
 
     MatchContract receiveMessage = MatchContract.builder(ReceiveMessage.class, PactInteger.class, 0, 0)
-        .input1(deliverMessage)
-        .input2(iteration.getSolutionSet())
+        .input1(iteration.getSolutionSet())
+        .input2(deliverMessage)
         .name("ReceiveMessage")
         .build();
+
+    iteration.setSolutionSetDelta(receiveMessage);
 
     MatchContract forwardMessage = MatchContract.builder(ForwardToFriend.class, PactInteger.class, 0, 0)
         .input1(iteration.getSolutionSetDelta())
@@ -104,7 +106,7 @@ public class ChainLetter implements PlanAssembler {
         .build();
 
     iteration.setNextWorkset(forwardMessage);
-    iteration.setSolutionSetDelta(receiveMessage);
+
 
     FileDataSink out = new FileDataSink(new RecordOutputFormat(), outputPath, iteration, "Output");
     RecordOutputFormat.configureRecordFormat(out)

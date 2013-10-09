@@ -40,6 +40,10 @@ public class ReadEdges extends MapStub {
 
     String line = record.getField(0, PactString.class).getValue();
 
+    if (line.startsWith("%")) {
+      return;
+    }
+
     String[] tokens = SEPARATOR.split(line);
     int source = Integer.parseInt(tokens[0]);
     int target = Integer.parseInt(tokens[1]);
