@@ -8,14 +8,20 @@
   <artifactId>graphmining-with-ozone</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <!--repositories>
+  <repositories>
     <repository>
       <id>snapshots-repo</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <releases><enabled>false</enabled></releases>
-      <snapshots><enabled>true</enabled></snapshots>
+      <snapshots>
+         <enabled>true</enabled>
+      </snapshots>
     </repository>
-  </repositories-->
+  </repositories>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <ozone.version>0.4-ozone-SNAPSHOT</ozone.version>
+  </properties>
 
 
   <dependencies>

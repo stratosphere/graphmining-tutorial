@@ -1,3 +1,22 @@
+/**
+ * Graph-Mining Tutorial for Ozone
+ *
+ * Copyright (C) 2013  Sebastian Schelter <ssc@apache.org>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package de.tuberlin.dima.aim3.graphmining;
 
 import eu.stratosphere.pact.client.LocalExecutor;
@@ -25,7 +44,7 @@ public class OutDegreeDistribution implements PlanAssembler {
   public Plan getPlan(String... args) {
 
     if (args.length != 3) {
-      System.err.println("numSubtasks input-path output-path");
+      System.err.println("<numSubtasks> <inputPath> <outputPath>");
       System.exit(-1);
     }
 
@@ -113,12 +132,14 @@ public class OutDegreeDistribution implements PlanAssembler {
   @ReduceContract.Combinable
   public static class SumDegrees extends ReduceStub {
 
+    private final PactRecord outputRecord = new PactRecord();
     private final PactInteger pactCount = new PactInteger();
 
     @Override
     public void reduce(Iterator<PactRecord> records, Collector<PactRecord> collector) throws Exception {
 
       PactRecord firstRecord = records.next();
+      PactInteger vertex = firstRecord.getField(0, PactInteger.class);
       int count = firstRecord.getField(1, PactInteger.class).getValue();
       while (records.hasNext()) {
         PactRecord nextRecord = records.next();
@@ -126,16 +147,16 @@ public class OutDegreeDistribution implements PlanAssembler {
       }
 
       pactCount.setValue(count);
-      firstRecord.setField(1, pactCount);
-      collector.collect(firstRecord);
+      outputRecord.setField(0, vertex);
+      outputRecord.setField(1, pactCount);
+      collector.collect(outputRecord);
     }
   }
 
   public static void main(String[] args) throws Exception {
 
-    Plan plan = new OutDegreeDistribution().getPlan(String.valueOf(1),
-        "file:////home/ssc/Desktop/tmp/slashdot-zoo/slashdot-zoo.csv",
-        "file:///tmp/ozone/outdegrees");
+    Plan plan = new OutDegreeDistribution().getPlan(String.valueOf(Config.numberOfSubtasks()),
+        Config.pathToSlashdotZoo(), Config.outputPath() + "outdegrees");
     LocalExecutor.execute(plan);
     System.exit(0);
   }
