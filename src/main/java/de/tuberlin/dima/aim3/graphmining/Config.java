@@ -24,7 +24,7 @@ public class Config {
   private Config() {}
 
   public static int numberOfSubtasks() {
-    return 1;
+    return 2;
   }
 
   public static String pathToSlashdotZoo() {

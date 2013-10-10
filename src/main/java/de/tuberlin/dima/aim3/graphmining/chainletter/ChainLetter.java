@@ -36,8 +36,7 @@ import eu.stratosphere.pact.generic.contract.WorksetIteration;
 
 public class ChainLetter implements PlanAssembler {
 
-  public static final double SEED_RATIO = 0.00125;
-
+  public static final double INITIATOR_RATIO = 0.00125;
   public static final double FORWARDING_PROBABILITY = 0.5;
 
   @Override

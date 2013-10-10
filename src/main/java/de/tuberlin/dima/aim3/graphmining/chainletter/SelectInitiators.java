@@ -39,7 +39,7 @@ public class SelectInitiators extends MapStub {
   @Override
   public void map(PactRecord record, Collector<PactRecord> collector) throws Exception {
 
-    boolean isSeedVertex = random.nextDouble() < 0.00125;
+    boolean isSeedVertex = random.nextDouble() < ChainLetter.INITIATOR_RATIO;
 
     vertexID.setValue(record.getField(0, PactInteger.class).getValue());
     seedVertex.setValue(isSeedVertex);

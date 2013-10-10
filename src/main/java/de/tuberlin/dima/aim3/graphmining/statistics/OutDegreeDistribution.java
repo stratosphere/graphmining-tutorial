@@ -33,6 +33,7 @@ import eu.stratosphere.pact.common.stubs.Collector;
 import eu.stratosphere.pact.common.stubs.MapStub;
 import eu.stratosphere.pact.common.stubs.ReduceStub;
 import eu.stratosphere.pact.common.type.PactRecord;
+import eu.stratosphere.pact.common.type.base.PactDouble;
 import eu.stratosphere.pact.common.type.base.PactInteger;
 import eu.stratosphere.pact.common.type.base.PactString;
 
@@ -40,6 +41,8 @@ import java.util.Iterator;
 import java.util.regex.Pattern;
 
 public class OutDegreeDistribution implements PlanAssembler {
+
+  public static final int NUM_EDGES = 515581;
 
   @Override
   public Plan getPlan(String... args) {
@@ -77,7 +80,7 @@ public class OutDegreeDistribution implements PlanAssembler {
         .recordDelimiter('\n')
         .fieldDelimiter(' ')
         .field(PactInteger.class, 0)
-        .field(PactInteger.class, 1);
+        .field(PactDouble.class, 1);
 
     Plan plan = new Plan(out, "OutDegreeDistribution");
     plan.setDefaultParallelism(numSubTasks);
@@ -134,26 +137,25 @@ public class OutDegreeDistribution implements PlanAssembler {
     }
   }
 
-  @ReduceContract.Combinable
   public static class SumDegrees extends ReduceStub {
 
     private final PactRecord outputRecord = new PactRecord();
-    private final PactInteger pactCount = new PactInteger();
+    private final PactDouble degreeProbability = new PactDouble();
 
     @Override
     public void reduce(Iterator<PactRecord> records, Collector<PactRecord> collector) throws Exception {
 
       PactRecord firstRecord = records.next();
-      PactInteger vertex = firstRecord.getField(0, PactInteger.class);
+      PactInteger degree = firstRecord.getField(0, PactInteger.class);
       int count = firstRecord.getField(1, PactInteger.class).getValue();
       while (records.hasNext()) {
         PactRecord nextRecord = records.next();
         count += nextRecord.getField(1, PactInteger.class).getValue();
       }
 
-      pactCount.setValue(count);
-      outputRecord.setField(0, vertex);
-      outputRecord.setField(1, pactCount);
+      degreeProbability.setValue((double) count / NUM_EDGES);
+      outputRecord.setField(0, degree);
+      outputRecord.setField(1, degreeProbability);
       collector.collect(outputRecord);
     }
   }
@@ -161,7 +163,7 @@ public class OutDegreeDistribution implements PlanAssembler {
   public static void main(String[] args) throws Exception {
 
     Plan plan = new OutDegreeDistribution().getPlan(String.valueOf(Config.numberOfSubtasks()),
-        Config.pathToSlashdotZoo(), Config.outputPath() + "outdegrees");
+        Config.pathToSlashdotZoo(), Config.outputPath() + "outdegrees/");
     LocalExecutor.execute(plan);
     System.exit(0);
   }
