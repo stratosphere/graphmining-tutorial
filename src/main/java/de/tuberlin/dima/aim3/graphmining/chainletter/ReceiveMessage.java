@@ -21,9 +21,12 @@ package de.tuberlin.dima.aim3.graphmining.chainletter;
 
 import eu.stratosphere.pact.common.stubs.Collector;
 import eu.stratosphere.pact.common.stubs.MatchStub;
+import eu.stratosphere.pact.common.stubs.StubAnnotation;
 import eu.stratosphere.pact.common.type.PactRecord;
 import eu.stratosphere.pact.common.type.base.PactBoolean;
 
+
+@StubAnnotation.ConstantFieldsFirst({ 0 })
 public class ReceiveMessage extends MatchStub {
 
   private PactBoolean messageDelivered = new PactBoolean(true);
