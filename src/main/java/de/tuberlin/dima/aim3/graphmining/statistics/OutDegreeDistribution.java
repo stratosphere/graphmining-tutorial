@@ -40,6 +40,10 @@ import eu.stratosphere.pact.common.type.base.PactString;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
+/**
+ * Stratosphere program to compute the out-degree distribution (wrt the probability that a random vertex has a given
+ * number of out-going edges)
+ */
 public class OutDegreeDistribution implements PlanAssembler {
 
   public static final int NUM_EDGES = 515581;
@@ -69,10 +73,10 @@ public class OutDegreeDistribution implements PlanAssembler {
         .name("DegreePerVertex")
         .build();
 
-    ReduceContract sumDegrees = ReduceContract.builder(SumDegrees.class)
+    ReduceContract sumDegrees = ReduceContract.builder(ComputeDistribution.class)
         .input(degreePerVertex)
         .keyField(PactInteger.class, 0)
-        .name("SumDegrees")
+        .name("ComputeDistribution")
         .build();
 
     FileDataSink out = new FileDataSink(new RecordOutputFormat(), outputPath, sumDegrees, "Degrees");
@@ -87,6 +91,7 @@ public class OutDegreeDistribution implements PlanAssembler {
     return plan;
   }
 
+  /* maps an edge (s,t) to the tuple (s,1) so that we can later compute the degree of s */
   public static class EdgeMap extends MapStub {
 
     private final PactRecord outputRecord = new PactRecord();
@@ -115,6 +120,8 @@ public class OutDegreeDistribution implements PlanAssembler {
     }
   }
 
+  /* compute the degree d of a vertex, output a tuple (d,1),
+     so that we can compute the number of vertices with this degree later on */
   public static class DegreePerVertex extends ReduceStub {
 
     private final PactRecord outputRecord = new PactRecord();
@@ -137,7 +144,8 @@ public class OutDegreeDistribution implements PlanAssembler {
     }
   }
 
-  public static class SumDegrees extends ReduceStub {
+  /* sum up the number of vertices with a given degree, create the distribution from that */
+  public static class ComputeDistribution extends ReduceStub {
 
     private final PactRecord outputRecord = new PactRecord();
     private final PactDouble degreeProbability = new PactDouble();
