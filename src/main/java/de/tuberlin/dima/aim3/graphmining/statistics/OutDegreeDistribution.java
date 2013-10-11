@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  */
 public class OutDegreeDistribution implements PlanAssembler {
 
-  public static final int NUM_EDGES = 515581;
+  public static final int NUM_VERTICES = 79120;
 
   @Override
   public Plan getPlan(String... args) {
@@ -73,13 +73,13 @@ public class OutDegreeDistribution implements PlanAssembler {
         .name("DegreePerVertex")
         .build();
 
-    ReduceContract sumDegrees = ReduceContract.builder(ComputeDistribution.class)
+    ReduceContract computeDistribution = ReduceContract.builder(ComputeDistribution.class)
         .input(degreePerVertex)
         .keyField(PactInteger.class, 0)
         .name("ComputeDistribution")
         .build();
 
-    FileDataSink out = new FileDataSink(new RecordOutputFormat(), outputPath, sumDegrees, "Degrees");
+    FileDataSink out = new FileDataSink(new RecordOutputFormat(), outputPath, computeDistribution, "Distribution");
     RecordOutputFormat.configureRecordFormat(out)
         .recordDelimiter('\n')
         .fieldDelimiter(' ')
@@ -161,7 +161,7 @@ public class OutDegreeDistribution implements PlanAssembler {
         count += nextRecord.getField(1, PactInteger.class).getValue();
       }
 
-      degreeProbability.setValue((double) count / NUM_EDGES);
+      degreeProbability.setValue((double) count / NUM_VERTICES);
       outputRecord.setField(0, degree);
       outputRecord.setField(1, degreeProbability);
       collector.collect(outputRecord);
