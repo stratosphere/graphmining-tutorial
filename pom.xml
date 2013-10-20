@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-  <groupId>graphmining-with-ozone</groupId>
-  <artifactId>graphmining-with-ozone</artifactId>
+  <groupId>graphmining-with-stratosphere</groupId>
+  <artifactId>graphmining-with-stratosphere</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <repositories>
@@ -20,7 +20,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <ozone.version>0.4-ozone-SNAPSHOT</ozone.version>
+    <ozone.version>0.4-SNAPSHOT</ozone.version>
   </properties>
 
 
@@ -28,12 +28,12 @@
     <dependency>
       <groupId>eu.stratosphere</groupId>
       <artifactId>pact-common</artifactId>
-      <version>0.4-ozone-SNAPSHOT</version>
+      <version>0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>eu.stratosphere</groupId>
       <artifactId>pact-clients</artifactId>
-      <version>0.4-ozone-SNAPSHOT</version>
+      <version>0.4-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
