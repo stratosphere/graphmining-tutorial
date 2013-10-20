@@ -20,7 +20,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <ozone.version>0.4-ozone-SNAPSHOT</ozone.version>
+    <ozone.version>0.4-SNAPSHOT</ozone.version>
   </properties>
 
 
@@ -28,12 +28,12 @@
     <dependency>
       <groupId>eu.stratosphere</groupId>
       <artifactId>pact-common</artifactId>
-      <version>0.4-ozone-SNAPSHOT</version>
+      <version>0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>eu.stratosphere</groupId>
       <artifactId>pact-clients</artifactId>
-      <version>0.4-ozone-SNAPSHOT</version>
+      <version>0.4-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
